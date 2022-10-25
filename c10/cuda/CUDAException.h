@@ -12,6 +12,8 @@
 #include <sstream>
 #include <vector>
 
+#define TORCH_USE_CUDA_DSA
+
 // Note [CHECK macro]
 // ~~~~~~~~~~~~~~~~~~
 // This is a macro so that AT_ERROR can get accurate __LINE__
