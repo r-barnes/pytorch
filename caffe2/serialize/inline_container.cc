@@ -275,7 +275,7 @@ size_t getPadding(
 bool PyTorchStreamReader::hasRecord(const std::string& name) {
   std::lock_guard<std::mutex> guard(reader_lock_);
 
-  if ((!load_debug_symbol_) && c10::string_view(name).ends_with(kDebugPklSuffix)) {
+  if ((!load_debug_symbol_) && c10::ends_with(c10::string_view(name), (kDebugPklSuffix))) {
     return false;
   }
   std::string ss = archive_name_plus_slash_ + name;
@@ -312,7 +312,7 @@ std::vector<std::string> PyTorchStreamReader::getAllRecords() {
           buf);
     }
     if ((load_debug_symbol_) ||
-        (!c10::string_view(buf + archive_name_plus_slash_.size()).ends_with(kDebugPklSuffix))) {
+        (!c10::ends_with(c10::string_view(buf + archive_name_plus_slash_.size()), kDebugPklSuffix))) {
       // NOLINTNEXTLINE(modernize-use-emplace)
       out.push_back(buf + archive_name_plus_slash_.size());
     }
@@ -335,7 +335,7 @@ size_t PyTorchStreamReader::getRecordID(const std::string& name) {
 // return dataptr, size
 std::tuple<at::DataPtr, size_t> PyTorchStreamReader::getRecord(const std::string& name) {
   std::lock_guard<std::mutex> guard(reader_lock_);
-  if ((!load_debug_symbol_) && c10::string_view(name).ends_with(kDebugPklSuffix)) {
+  if ((!load_debug_symbol_) && c10::ends_with(c10::string_view(name), (kDebugPklSuffix))) {
     at::DataPtr retval;
     return std::make_tuple(std::move(retval), 0);
   }
@@ -440,7 +440,7 @@ PyTorchStreamReader::getRecord(const std::string& name,
 size_t
 PyTorchStreamReader::getRecord(const std::string& name, void* dst, size_t n) {
   std::lock_guard<std::mutex> guard(reader_lock_);
-  if ((!load_debug_symbol_) && c10::string_view(name).ends_with(kDebugPklSuffix)) {
+  if ((!load_debug_symbol_) && c10::ends_with(c10::string_view(name), (kDebugPklSuffix))) {
     return 0;
   }
   size_t key = getRecordID(name);
@@ -500,7 +500,7 @@ size_t PyTorchStreamReader::getRecord(
     void* buf,
     const std::function<void(void*, const void*, size_t)>& memcpy_func) {
   std::lock_guard<std::mutex> guard(reader_lock_);
-  if ((!load_debug_symbol_) && c10::string_view(name).ends_with(kDebugPklSuffix)) {
+  if ((!load_debug_symbol_) && c10::ends_with(c10::string_view(name), (kDebugPklSuffix))) {
     return 0;
   }
   if (chunk_size <= 0) {
